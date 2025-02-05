@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
-export default function AgentMenuBar() {
+import { usePrivy } from "@privy-io/react-auth";
+export default function AgentMenuBar({ setIsLoggedIn }) {
   const [openSupportMenu, setOpenSupportMenu] = useState(false);
-
+  const { logout } = usePrivy();
   const closeMenuTimer = () => {
     const timer = setTimeout(() => {
       setOpenSupportMenu(false);
@@ -72,7 +73,10 @@ export default function AgentMenuBar() {
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                    <button
+                      onClick={logout}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                    >
                       Logout
                     </button>
                     <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
