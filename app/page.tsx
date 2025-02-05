@@ -3,19 +3,16 @@ import { Button } from "@/components/ui/button";
 import ChatInterface from "@/components/blocks/ChatInterface";
 import AgentMenuBar from "@/components/blocks/AgentMenuBar";
 import ActionInfoBar from "@/components/blocks/ActionInfoBar";
-import LandingPage from "@/components/LandingPage";
-import { useState } from "react";
 
 import { usePrivy } from "@privy-io/react-auth";
 
 export default function Page() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { login, user } = usePrivy();
   return (
     <>
       {user ? (
         <div className="grid grid-cols-12 min-h-screen">
-          <AgentMenuBar setIsLoggedIn={setIsLoggedIn} />
+          <AgentMenuBar />
           <ChatInterface />
           <ActionInfoBar />
         </div>

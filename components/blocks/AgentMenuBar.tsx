@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
 import { usePrivy } from "@privy-io/react-auth";
-export default function AgentMenuBar({ setIsLoggedIn }) {
+export default function AgentMenuBar() {
   const [openSupportMenu, setOpenSupportMenu] = useState(false);
   const { logout } = usePrivy();
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
   const closeMenuTimer = () => {
     const timer = setTimeout(() => {
       setOpenSupportMenu(false);
@@ -12,13 +14,15 @@ export default function AgentMenuBar({ setIsLoggedIn }) {
   };
 
   const handleMouseEnter = () => {
-    if (window.closeTimeout) {
-      clearTimeout(window.closeTimeout);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
     }
   };
 
   const handleMouseLeave = () => {
-    window.closeTimeout = closeMenuTimer();
+    const timer = closeMenuTimer();
+    setTimeoutId(timer);
   };
 
   return (
@@ -54,7 +58,8 @@ export default function AgentMenuBar({ setIsLoggedIn }) {
                   onClick={() => {
                     setOpenSupportMenu(!openSupportMenu);
                     if (!openSupportMenu) {
-                      window.closeTimeout = closeMenuTimer();
+                      const timer = closeMenuTimer();
+                      setTimeoutId(timer);
                     }
                   }}
                 >
