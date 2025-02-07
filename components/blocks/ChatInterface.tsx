@@ -20,7 +20,7 @@ export default function ChatInterface() {
     Array<{ id: string; role: "user" | "assistant"; content: string }>
   >([]);
 
-  // Add message to chat history when completion changes
+  
   React.useEffect(() => {
     if (completion) {
       setMessages((prev) => {

@@ -5,6 +5,7 @@ export default function ActionInfoBar() {
   const embeddedWallet = wallets.find(
     (wallet) => wallet.walletClientType === "privy"
   );
+  console.log("Wallet Address", embeddedWallet?.address);
   return (
     <div className="col-span-3 bg-gray-50">
       <div className="w-full m-2 p-2 rounded-lg flex gap-10 bg-gray-100">
