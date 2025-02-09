@@ -106,7 +106,7 @@ export default function ChatInterface() {
 
   return (
     <>
-      <Card className="w-full h-full max-h-[95vh] flex flex-col">
+      <Card className="w-full h-[calc(100vh-4rem)] lg:h-[95vh] flex flex-col">
         <CardContent className="flex-grow overflow-hidden">
           <ScrollArea className="h-full pr-4">
             {messages.map((message) => (
@@ -147,7 +147,7 @@ export default function ChatInterface() {
           </ScrollArea>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             {messages.length == 0 &&
               suggestedActions.map((action, index) => (
                 <motion.div
@@ -155,7 +155,7 @@ export default function ChatInterface() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * index }}
                   key={index}
-                  className={index > 1 ? "hidden sm:block" : "block"}
+                  className="w-full sm:w-auto"
                 >
                   <button
                     onClick={action.onClick}
