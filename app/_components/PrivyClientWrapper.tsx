@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { config as wagmiConfig } from "@/lib/wagmi";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { baseSepolia } from "viem/chains";
+import { ThemeProvider } from "@/app/providers/ThemeProvider";
 export default function PrivyClientWrapper({
   children,
 }: {
@@ -33,7 +34,7 @@ export default function PrivyClientWrapper({
             apiKey={process.env.CDP_API_KEY}
             chain={baseSepolia}
           >
-            {children}
+            <ThemeProvider>{children}</ThemeProvider>
           </OnchainKitProvider>
         </PrivyProvider>
       </QueryClientProvider>

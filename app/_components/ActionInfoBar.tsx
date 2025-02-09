@@ -9,24 +9,24 @@ interface ActionInfoBarProps {
 
 function ActionInfoBar({ onClose }: ActionInfoBarProps) {
   return (
-    <div className="h-full">
+    <div className="h-full bg-white dark:bg-gray-900">
       <div className="flex items-center justify-between mt-2 mx-2 gap-1">
         <div className="flex items-center gap-2">
           <UserPill
             action={{ type: "login", options: { loginMethods: ["email"] } }}
           />
           <a
-            href="https://forms.gle/your-form-link"
+            href="https://forms.fillout.com/t/izfUfPjyoYus"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block py-[0.6rem] px-6 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+            className="inline-block py-[0.6rem] px-6 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
           >
             Feedback
           </a>
         </div>
       </div>
-      <div className="w-3xl p-6 h-[15rem] rounded-xl bg-white shadow-sm border border-gray-100 m-2">
-        <h1>Actions History</h1>
+      <div className="w-3xl p-6 h-[15rem] rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 m-2">
+        <h1 className="text-gray-900 dark:text-gray-100">Actions History</h1>
       </div>
     </div>
   );

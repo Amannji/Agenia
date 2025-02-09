@@ -106,8 +106,8 @@ export default function ChatInterface() {
 
   return (
     <>
-      <Card className="w-full h-[calc(100vh-4rem)] lg:h-[95vh] flex flex-col">
-        <CardContent className="flex-grow overflow-hidden">
+      <Card className="w-full h-[calc(100vh-4rem)] lg:h-[95vh] flex flex-col bg-white dark:bg-gray-900">
+        <CardContent className="flex-grow overflow-hidden p-4">
           <ScrollArea className="h-full pr-4">
             {messages.map((message) => (
               <Message
@@ -125,7 +125,7 @@ export default function ChatInterface() {
                     <button
                       key={action.name}
                       onClick={action.onClick}
-                      className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                      className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-full transition-colors"
                     >
                       {action.name}
                     </button>
@@ -135,7 +135,7 @@ export default function ChatInterface() {
 
             {isTyping && (
               <div className="flex justify-start my-2">
-                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100">
+                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
@@ -146,7 +146,7 @@ export default function ChatInterface() {
             <div ref={messagesEndRef} />
           </ScrollArea>
         </CardContent>
-        <CardFooter className="flex flex-col gap-2">
+        <CardFooter className="flex flex-col gap-4 p-4 bg-white dark:bg-gray-900">
           <div className="flex flex-wrap gap-3">
             {messages.length == 0 &&
               suggestedActions.map((action, index) => (
@@ -159,10 +159,10 @@ export default function ChatInterface() {
                 >
                   <button
                     onClick={action.onClick}
-                    className="w-full text-left border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg p-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex flex-col"
+                    className="w-full text-left border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg p-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex flex-col gap-1"
                   >
                     <span className="font-medium">{action.name}</span>
-                    <span className="text-zinc-500 dark:text-zinc-400">
+                    <span className="text-gray-600 dark:text-gray-400">
                       {action.description}
                     </span>
                   </button>
@@ -174,9 +174,13 @@ export default function ChatInterface() {
               value={input}
               onChange={handleInputChange}
               placeholder="Type your message..."
-              className="flex-grow"
+              className="flex-grow bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-700 focus:border-gray-300 dark:focus:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400"
             />
-            <Button type="submit" disabled={isTyping || !input.trim()}>
+            <Button
+              type="submit"
+              disabled={isTyping || !input.trim()}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
               Send
             </Button>
           </form>
