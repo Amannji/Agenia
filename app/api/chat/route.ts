@@ -1,8 +1,23 @@
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
-import { tools } from "@/ai/tools";
+// import { tools } from "@/ai/tools";
+import z from "zod";
+// import { tool } from "@langchain/core/tools";
+import { generateResponse } from "@/lib/agents/Coinbase/cdpAgent";
 
-export const runtime = "edge";
+// const cdpTool = tool(
+//   async ({ userInput }: { userInput: string }) => {
+//     const response = await generateResponse(userInput);
+//     return response;
+//   },
+//   {
+//     name: "askCDP",
+//     description: "Use this tool to get the response from the cdp agent",
+//     parameters: z.object({
+//       userInput: z.string(),
+//     }),
+//   }
+// );
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -11,9 +26,22 @@ export async function POST(req: Request) {
     messages,
     temperature: 0.7,
     maxTokens: 500,
-    system:
-      "You are a helpful assistant that can answer questions and use tools to provide information. When you are invoking a tool, you should wait for the tool to return a result and not talk to the user until the tool has returned a result.",
-    tools,
+    system: `You are a helpful assistant that works with a CDP agent. 
+    When users ask about CDPs or want to perform CDP operations, use the askCDPAgent tool to handle their request.
+    The CDP agent is capable of understanding user intent and performing the necessary actions.`,
+    tools: {
+      askCDP: {
+        description: "Use this tool to get the response from the cdp agent",
+        parameters: z.object({
+          userInput: z.string(),
+        }),
+        execute: async ({ userInput }) => {
+          const response = await generateResponse(userInput);
+          return response;
+        },
+      },
+    },
+    toolChoice: "auto",
     maxSteps: 5,
   });
   return result.toDataStreamResponse();

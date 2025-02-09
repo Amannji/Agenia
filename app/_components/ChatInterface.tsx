@@ -20,29 +20,15 @@ export default function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // useEffect(() => {
-  //   const loadDynamicPrompts = async () => {
-  //     if (
-  //       messages.length > 0 &&
-  //       messages[messages.length - 1].role === "assistant"
-  //     ) {
-  //       const prompts = await generateContextualPrompts(
-  //         messages[messages.length - 1].content
-  //       );
-  //       setDynamicPrompts(prompts);
-  //     }
-  //   };
-  //   loadDynamicPrompts();
-  // }, [messages]);
+  useEffect(scrollToBottom, [messages]); // Update to scroll when messages change
 
-  useEffect(scrollToBottom, []);
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.trim()) {
       setIsTyping(true);
       handleSubmit(e);
       setIsTyping(false);
+      scrollToBottom();
     }
   };
 
@@ -71,7 +57,7 @@ export default function ChatInterface() {
 
   return (
     <>
-      <Card className="w-full h-full flex flex-col">
+      <Card className="w-full h-full max-h-[95vh] flex flex-col">
         <CardContent className="flex-grow overflow-hidden">
           <ScrollArea className="h-full pr-4">
             {messages.map((message) => (
@@ -146,7 +132,7 @@ export default function ChatInterface() {
                 );
               })}
           </div>
-          <form onSubmit={onSubmit} className="flex w-full space-x-2">
+          <form onSubmit={handleFormSubmit} className="flex w-full space-x-2">
             <Input
               value={input}
               onChange={handleInputChange}
@@ -160,8 +146,5 @@ export default function ChatInterface() {
         </CardFooter>
       </Card>
     </>
-    // <div className="flex items-center justify-center min-h-screen bg-gray-100 p-1">
-
-    // </div>
   );
 }
