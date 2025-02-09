@@ -1,23 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
-// import { tools } from "@/ai/tools";
-import z from "zod";
-// import { tool } from "@langchain/core/tools";
-import { generateResponse } from "@/lib/agents/Coinbase/cdpAgent";
-
-// const cdpTool = tool(
-//   async ({ userInput }: { userInput: string }) => {
-//     const response = await generateResponse(userInput);
-//     return response;
-//   },
-//   {
-//     name: "askCDP",
-//     description: "Use this tool to get the response from the cdp agent",
-//     parameters: z.object({
-//       userInput: z.string(),
-//     }),
-//   }
-// );
+import { tools } from "./tools";
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -26,21 +9,8 @@ export async function POST(req: Request) {
     messages,
     temperature: 0.7,
     maxTokens: 500,
-    system: `You are a helpful assistant that works with a CDP agent. 
-    When users ask about CDPs or want to perform CDP operations, use the askCDPAgent tool to handle their request.
-    The CDP agent is capable of understanding user intent and performing the necessary actions.`,
-    tools: {
-      askCDP: {
-        description: "Use this tool to get the response from the cdp agent",
-        parameters: z.object({
-          userInput: z.string(),
-        }),
-        execute: async ({ userInput }) => {
-          const response = await generateResponse(userInput);
-          return response;
-        },
-      },
-    },
+    system: `You are a super assistant that acts as a orchestrator for different agents. For any blockchain related queries, you should invoke the askCDP tool. When you are asked to swap tokens, you invoke the swapTokens tool.`,
+    tools: tools,
     toolChoice: "auto",
     maxSteps: 5,
   });

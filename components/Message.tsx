@@ -1,5 +1,8 @@
+"use client";
 import { Stock } from "./stock";
+import { SwapDemo } from "./onchainKit/Swap";
 import { Weather } from "./weather";
+import { BuyToken } from "./onchainKit/BuyToken";
 export default function Message({ id, role, content, toolInvocations }) {
   return (
     <div
@@ -19,7 +22,7 @@ export default function Message({ id, role, content, toolInvocations }) {
         <div className="leading-relaxed whitespace-pre-wrap">{content}</div>
 
         <div className="mt-3 space-y-3">
-          {toolInvocations?.map((toolInvocation) => {
+          {toolInvocations?.map((toolInvocation: any) => {
             const { toolName, toolCallId, state } = toolInvocation;
 
             if (state === "result") {
@@ -35,6 +38,19 @@ export default function Message({ id, role, content, toolInvocations }) {
                 return (
                   <div key={toolCallId} className="max-w-md">
                     <Stock {...result} />
+                  </div>
+                );
+              } else if (toolName === "swapTokens") {
+                const { result } = toolInvocation;
+                return (
+                  <div key={toolCallId} className="max-w-md">
+                    <SwapDemo {...result} />
+                  </div>
+                );
+              } else if (toolName === "buyToken") {
+                return (
+                  <div key={toolCallId} className="max-w-md">
+                    <BuyToken />
                   </div>
                 );
               }

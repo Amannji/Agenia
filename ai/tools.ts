@@ -23,6 +23,25 @@ export const stockTool = createTool({
   },
 });
 
+const tokenSchema = z.object({
+  name: z.string(),
+  address: z.string(),
+  symbol: z.string(),
+  decimals: z.number(),
+  image: z.string().url(),
+  chainId: z.number(),
+});
+
+export const buyTokenTool = createTool({
+  description: "Buy a token",
+  parameters: z.object({
+    token: tokenSchema.describe("The token to buy"),
+  }),
+  execute: async function ({ token }) {
+    return { token };
+  },
+});
+
 export const tools = {
   displayWeather: weatherTool,
   getStockPrice: stockTool,
