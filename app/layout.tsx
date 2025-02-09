@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import "@coinbase/onchainkit/styles.css";
 import "./globals.css";
 import PrivyClientWrapper from "@/app/_components/PrivyClientWrapper";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,15 +22,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <PrivyClientWrapper>{children}</PrivyClientWrapper>
+        <ThemeProvider>
+          <PrivyClientWrapper>{children}</PrivyClientWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

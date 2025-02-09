@@ -8,10 +8,26 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Message from "../../components/Message";
 import { motion } from "framer-motion";
+import { usePrivy } from "@privy-io/react-auth";
 
 export default function ChatInterface() {
-  const { messages, input, append, handleInputChange, handleSubmit } =
-    useChat();
+  const { login, authenticated } = usePrivy();
+  const { messages, input, append, handleInputChange, handleSubmit } = useChat({
+    initialMessages: [
+      {
+        id: "welcome",
+        role: "assistant",
+        content:
+          "👋 Welcome to Agenia! I'm your personal DeFi assistant\n" +
+          "📲I can help you with:\n" +
+          "• Getting real-time DeFi protocol information and analytics\n" +
+          "• Executing token swaps and trades\n" +
+          "• Monitoring your portfolio performance\n" +
+          "• Explaining complex DeFi concepts in simple terms\n\n" +
+          "What would you like to explore today?",
+      },
+    ],
+  });
 
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -20,10 +36,33 @@ export default function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(scrollToBottom, [messages]); // Update to scroll when messages change
+  useEffect(scrollToBottom, [messages]);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Check if input contains DeFi related keywords
+    const defiKeywords = [
+      "blockchain",
+      "crypto",
+      "token",
+      "swap",
+      "defi",
+      "eth",
+      "btc",
+      "wallet",
+      "protocol",
+      "tvl",
+    ];
+    const requiresAuth = defiKeywords.some((keyword) =>
+      input.toLowerCase().includes(keyword.toLowerCase())
+    );
+
+    if (!authenticated && requiresAuth) {
+      login();
+      return;
+    }
+
     if (input.trim()) {
       setIsTyping(true);
       handleSubmit(e);
@@ -32,33 +71,43 @@ export default function ChatInterface() {
     }
   };
 
+  const handleSuggestedAction = (content: string) => {
+    // All suggested actions are DeFi-related, so they require auth
+    if (!authenticated) {
+      login();
+      return;
+    }
+    append({
+      role: "user",
+      content: content,
+    });
+  };
+
   const suggestedActions = [
     {
-      name: "Get Stock Price",
-      description: "Get the price Apple",
+      name: "Check DeFi Stats",
+      description: "Get latest protocol analytics",
       onClick: () => {
-        append({
-          role: "user",
-          content: "What is the price of AAPL?",
-        });
+        handleSuggestedAction(
+          "What are the current TVL stats for major DeFi protocols?"
+        );
       },
     },
     {
-      name: "Get Weather",
-      description: "Get the weather in Tokyo",
+      name: "Token Swap",
+      description: "Swap tokens at best rates",
       onClick: () => {
-        append({
-          role: "user",
-          content: "What is the weather in Tokyo?",
-        });
+        handleSuggestedAction(
+          "I want to swap ETH for USDC. What are the current rates?"
+        );
       },
     },
   ];
 
   return (
     <>
-      <Card className="w-full h-full max-h-[95vh] flex flex-col">
-        <CardContent className="flex-grow overflow-hidden">
+      <Card className="w-full h-[calc(100vh-4rem)] lg:h-[95vh] flex flex-col bg-white dark:bg-gray-900">
+        <CardContent className="flex-grow overflow-hidden p-4">
           <ScrollArea className="h-full pr-4">
             {messages.map((message) => (
               <Message
@@ -72,23 +121,13 @@ export default function ChatInterface() {
             {messages.length > 0 &&
               messages[messages.length - 1].role === "assistant" && (
                 <div className="flex flex-wrap gap-2 mt-4">
-                  {[
-                    "Tell me more about this",
-                    "What are the risks?",
-                    "How can I get started?",
-                    "Can you explain it simpler?",
-                  ].map((prompt) => (
+                  {suggestedActions.map((action) => (
                     <button
-                      key={prompt}
-                      onClick={() => {
-                        append({
-                          role: "user",
-                          content: prompt,
-                        });
-                      }}
-                      className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                      key={action.name}
+                      onClick={action.onClick}
+                      className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-full transition-colors"
                     >
-                      {prompt}
+                      {action.name}
                     </button>
                   ))}
                 </div>
@@ -96,7 +135,7 @@ export default function ChatInterface() {
 
             {isTyping && (
               <div className="flex justify-start my-2">
-                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100">
+                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
@@ -107,39 +146,41 @@ export default function ChatInterface() {
             <div ref={messagesEndRef} />
           </ScrollArea>
         </CardContent>
-        <CardFooter className="flex flex-col gap-2">
-          <div className="flex gap-3">
+        <CardFooter className="flex flex-col gap-4 p-4 bg-white dark:bg-gray-900">
+          <div className="flex flex-wrap gap-3">
             {messages.length == 0 &&
-              suggestedActions.map((action, index) => {
-                return (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 * index }}
-                    key={index}
-                    className={index > 1 ? "hidden sm:block" : "block"}
+              suggestedActions.map((action, index) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 * index }}
+                  key={index}
+                  className="w-full sm:w-auto"
+                >
+                  <button
+                    onClick={action.onClick}
+                    className="w-full text-left border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg p-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex flex-col gap-1"
                   >
-                    <button
-                      onClick={action.onClick}
-                      className="w-full text-left border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg p-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex flex-col"
-                    >
-                      <span className="font-medium">{action.name}</span>
-                      <span className="text-zinc-500 dark:text-zinc-400">
-                        {action.description}
-                      </span>
-                    </button>
-                  </motion.div>
-                );
-              })}
+                    <span className="font-medium">{action.name}</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      {action.description}
+                    </span>
+                  </button>
+                </motion.div>
+              ))}
           </div>
           <form onSubmit={handleFormSubmit} className="flex w-full space-x-2">
             <Input
               value={input}
               onChange={handleInputChange}
               placeholder="Type your message..."
-              className="flex-grow"
+              className="flex-grow bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-700 focus:border-gray-300 dark:focus:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400"
             />
-            <Button type="submit" disabled={isTyping || !input.trim()}>
+            <Button
+              type="submit"
+              disabled={isTyping || !input.trim()}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
               Send
             </Button>
           </form>

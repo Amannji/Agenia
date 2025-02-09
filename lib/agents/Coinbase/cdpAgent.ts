@@ -22,7 +22,7 @@ import { getLangChainTools } from "@coinbase/agentkit-langchain";
 import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
-
+import { lookupTokenDetails, lookupTokenTool } from "./tools";
 import { ChatOpenAI } from "@langchain/openai";
 // import { calculatorTool, dnsLookupTool } from "./tools";
 
@@ -144,12 +144,11 @@ async function initializeAgent() {
       ],
     });
 
-    const tools = await getLangChainTools(agentkit);
-    // const tools = [
-    //   dnsLookupTool,
-    //   calculatorTool,
-    //   ...(await getLangChainTools(agentkit)),
-    // ];
+    const tools = [
+      ...(await getLangChainTools(agentkit)),
+      lookupTokenTool,
+      lookupTokenDetails,
+    ];
 
     // Store buffered conversation history in memory
     const memory = new MemorySaver();
@@ -171,7 +170,7 @@ async function initializeAgent() {
         asks you to do something you can't do with your currently available tools, you must say so, and 
         encourage them to implement it themselves using the CDP SDK + Agentkit, recommend they go to 
         docs.cdp.coinbase.com for more information. Be concise and helpful with your responses. Refrain from 
-        restating your tools' descriptions unless it is explicitly requested.
+        restating your tools' descriptions unless it is explicitly requested. Use lookup tools to get the token details before interacting with the token and also when asked about them.
         `,
     });
 
@@ -185,70 +184,6 @@ async function initializeAgent() {
     throw error; // Re-throw to be handled by caller
   }
 }
-
-/**
- * Run the agent interactively based on user input
- */
-// async function runChatMode(agent: any, config: any) {
-//   console.log("Starting chat mode... Type 'exit' to end.");
-
-//   const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-//   });
-
-//   const question = (prompt: string): Promise<string> =>
-//     new Promise((resolve) => rl.question(prompt, resolve));
-
-//   try {
-//     while (true) {
-//       const userInput = await question("\nPrompt: ");
-
-//       if (userInput.toLowerCase() === "exit") {
-//         break;
-//       }
-
-//       const stream = await agent.stream(
-//         { messages: [new HumanMessage(userInput)] },
-//         config
-//       );
-
-//       for await (const chunk of stream) {
-//         if ("agent" in chunk) {
-//           console.log(chunk.agent.messages[0].content);
-//         } else if ("tools" in chunk) {
-//           console.log(chunk.tools.messages[0].content);
-//         }
-//         console.log("-------------------");
-//       }
-//     }
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       console.error("Error:", error.message);
-//     }
-//     process.exit(1);
-//   } finally {
-//     rl.close();
-//   }
-// }
-
-// async function main() {
-//   const { agent, config } = await initializeAgent();
-//   const response = await agent.invoke(
-//     {
-//       messages: [
-//         {
-//           role: "user",
-//           content: "What is my wallet address?",
-//         },
-//       ],
-//     },
-//     config
-//   );
-//   console.log(response);
-// }
-
-// main();
 
 export async function generateResponse(userInput: string) {
   const { agent, config } = await initializeAgent();
