@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     maxTokens: 500,
     system: `You are a helpful assistant that works with a CDP agent. 
     When users ask about CDPs or want to perform CDP operations, use the askCDPAgent tool to handle their request.
-    The CDP agent is capable of understanding user intent and performing the necessary actions.`,
+    The CDP agent is capable of understanding user intent and performing the necessary actions. You make use of eOracle tool to get the price of a token/USD.`,
     tools: {
       askCDP: {
         description: "Use this tool to get the response from the cdp agent",
@@ -41,14 +41,17 @@ export async function POST(req: Request) {
         },
       },
       askeOracle: {
-        description: "Use this tool, when users ask about the price of a token",
+        description:
+          "Use this tool, when user ask about the price of a token in USD",
         parameters: z.object({
           token: z.string(),
         }),
+
         execute: async ({ token }) => {
           const response = await generateResponse(token);
-          return response;
+          return `eOracle: ${response}`;
         },
+        prompt: `What is the price of ETH/USD?`,
       },
     },
     toolChoice: "auto",

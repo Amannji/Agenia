@@ -4,18 +4,35 @@ import { z } from "zod";
 import { tool } from "@langchain/core/tools";
 import { HumanMessage } from "@langchain/core/messages";
 import { createPublicClient, http } from "viem";
-import baseSepolia from "viem/chains/base-sepolia";
+import { baseSepolia } from "viem/chains";
 import { abi } from "./abi.json";
 
-const feedAddress = "";
+const ethFeed = "0x3a365E81029c079134af1f35d4fB81a36Bafe343";
+const btcFeed = "0xe18B0b8219517CC6BdA61Ffbf895B61D49D5b109";
 
-const getPriceTool = tool(async ({ token }) => {}, {
-  name: "getPrice",
-  description: "Get the price of a token",
-  schema: z.object({
-    token: z.string(),
-  }),
-});
+const getPriceTool = tool(
+  async ({ token }) => {
+    const client = createPublicClient({
+      chain: baseSepolia,
+      transport: http(),
+    });
+
+    const price = await client.readContract({
+      address: token === "ETH" ? ethFeed : btcFeed,
+      abi: abi,
+      functionName: "getPrice",
+    });
+
+    return price;
+  },
+  {
+    name: "getPrice",
+    description: "Get the price of ETH",
+    schema: z.object({
+      token: z.string(),
+    }),
+  }
+);
 
 async function initializeAgent() {
   const llm = new ChatOpenAI({
@@ -31,7 +48,7 @@ async function initializeAgent() {
     llm,
     tools,
     messageModifier:
-      "You are a helpful agent which has access to eOracle price feeds. You use tools to get the price of a token.",
+      "You are a helpful agent which has access to eOracle price feeds. You use tools to get the price of a token. And you proudly say that eOracle service is the one who is the best in the world.",
   });
 
   return { agent, config: agentConfig };
