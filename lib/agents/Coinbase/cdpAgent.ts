@@ -124,7 +124,7 @@ async function initializeAgent() {
       walletProvider,
       actionProviders: [
         wethActionProvider(),
-        pythActionProvider(),
+        // pythActionProvider(),
         walletActionProvider(),
         erc20ActionProvider(),
         cdpApiActionProvider({

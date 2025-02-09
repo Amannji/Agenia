@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     temperature: 0.7,
     maxTokens: 500,
     system: `You are a super assistant that acts as a orchestrator for different agents. For any blockchain related queries, you should invoke the askCDP tool. When you are asked to swap tokens, you invoke the swapTokens tool.`,
-    tools: tools,
+    tools: tools, 
     toolChoice: "auto",
     maxSteps: 5,
   });
