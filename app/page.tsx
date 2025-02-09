@@ -1,20 +1,39 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import ChatInterface from "@/components/blocks/ChatInterface";
-import AgentMenuBar from "@/components/blocks/AgentMenuBar";
-import ActionInfoBar from "@/components/blocks/ActionInfoBar";
+import ChatInterface from "@/app/_components/ChatInterface";
+import AgentMenuBar from "@/app/_components/AgentMenuBar";
+import ActionInfoBar from "@/app/_components/ActionInfoBar";
 
 import { usePrivy } from "@privy-io/react-auth";
+import { useState } from "react";
 
 export default function Page() {
   const { login, user } = usePrivy();
+  const [isCollapsed, setIsCollapsed] = useState(false);
   return (
     <>
       {user ? (
         <div className="grid grid-cols-12 min-h-screen">
-          <AgentMenuBar />
-          <ChatInterface />
-          <ActionInfoBar />
+          <div
+            className={`transition-all duration-300 ${
+              isCollapsed ? "col-span-[0.5]" : "col-span-2"
+            } bg-gray-50`}
+          >
+            <AgentMenuBar
+              isCollapsed={isCollapsed}
+              setIsCollapsed={setIsCollapsed}
+            />
+          </div>
+          <div
+            className={`transition-all duration-300 ${
+              isCollapsed ? "col-span-8" : "col-span-7"
+            } flex items-center justify-center bg-gray-100 p-4`}
+          >
+            <ChatInterface />
+          </div>
+          <div className="col-span-3 bg-gray-50">
+            <ActionInfoBar />
+          </div>
         </div>
       ) : (
         <>

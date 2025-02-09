@@ -18,3 +18,40 @@ export async function POST(req: Request) {
   });
   return result.toDataStreamResponse();
 }
+
+// import { ChatOpenAI } from "@langchain/openai";
+// import { LangChainAdapter } from "ai";
+// import { tool } from "@langchain/core/tools";
+// import { z } from "zod";
+// export const maxDuration = 60;
+
+// export async function POST(req: Request) {
+//   const { prompt } = await req.json();
+
+//   const getStockPrice = tool(
+//     async ({ symbol }) => {
+//       console.log("Stock price tool called");
+//       return { symbol, price: 100 };
+//     },
+//     {
+//       name: "getStockPrice",
+//       description: "Get the price of a stock",
+//       schema: z.object({
+//         symbol: z.string().describe("The stock symbol to get the price for"),
+//       }),
+//     }
+//   );
+
+//   const tools = [getStockPrice];
+
+//   const model = new ChatOpenAI({
+//     modelName: "llama70b",
+//     configuration: {
+//       baseURL: "https://llama70b.gaia.domains/v1",
+//     },
+//   }).bindTools(tools);
+
+//   const stream = await model.stream(prompt);
+
+//   return LangChainAdapter.toDataStreamResponse(stream);
+// }
