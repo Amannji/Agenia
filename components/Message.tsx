@@ -7,18 +7,13 @@ export default function Message({ id, role, content, toolInvocations }) {
   return (
     <div
       key={id}
-      className={`mb-4 flex ${
-        role === "user" ? "justify-end" : "justify-start"
-      }`}
+      className={`flex ${role === "user" ? "justify-end" : "justify-start"}`}
     >
       <div
         className={`max-w-[80%] ${
           role === "user" ? "bg-blue-500 text-white" : "bg-gray-100"
-        } rounded-lg px-3 mt-2`}
+        } rounded-lg px-2 pt-2 mt-2`}
       >
-        <div className="font-medium text-sm opacity-75 my-1 capitalize">
-          {role}
-        </div>
         <div className="leading-relaxed whitespace-pre-wrap">{content}</div>
 
         <div className="mt-3 space-y-3">

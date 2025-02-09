@@ -8,7 +8,6 @@ export default function ActionInfoBar() {
         <div>
           <UserPill
             action={{ type: "login", options: { loginMethods: ["email"] } }}
-            label={<p>amangpt314@gmail.com</p>}
           />
         </div>
         <div className="p-1">

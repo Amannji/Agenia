@@ -2,32 +2,14 @@
 
 // import { usePrivy } from "@privy-io/react-auth";
 // import { useEffect } from "react";
-import {
-  IconLayoutSidebarLeftCollapse,
-  IconLayoutSidebarRightCollapse,
-} from "@tabler/icons-react";
 
-interface AgentMenuBarProps {
-  isCollapsed: boolean;
-  setIsCollapsed: (value: boolean) => void;
-}
-
-export default function AgentMenuBar({
-  isCollapsed,
-  setIsCollapsed,
-}: AgentMenuBarProps) {
+export default function AgentMenuBar() {
   return (
     <div className="flex flex-col min-h-screen bg-white shadow-sm">
-      <div
-        className={`flex items-center ${
-          isCollapsed ? "justify-center" : "justify-between"
-        } px-4 py-6 border-b border-gray-100`}
-      >
-        {!isCollapsed && (
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Agentia
-          </h1>
-        )}
+      <div className="flex items-center justify-between px-4 py-6 border-b border-gray-100">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          Agentia
+        </h1>
         {/* <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
