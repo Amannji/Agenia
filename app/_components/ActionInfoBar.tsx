@@ -1,5 +1,5 @@
-import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { useEffect, useState } from "react";
+// import { usePrivy, useWallets } from "@privy-io/react-auth";
+// import { useEffect, useState } from "react";
 import { UserPill } from "@privy-io/react-auth/ui";
 export default function ActionInfoBar() {
   return (

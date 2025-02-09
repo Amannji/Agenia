@@ -40,6 +40,16 @@ export async function POST(req: Request) {
           return response;
         },
       },
+      askeOracle: {
+        description: "Use this tool, when users ask about the price of a token",
+        parameters: z.object({
+          token: z.string(),
+        }),
+        execute: async ({ token }) => {
+          const response = await generateResponse(token);
+          return response;
+        },
+      },
     },
     toolChoice: "auto",
     maxSteps: 5,
