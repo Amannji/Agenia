@@ -12,10 +12,6 @@ Building an agentic chat application that abstracts DeFi complexities behind a c
 - 🔒 Secure wallet integration (Coinbase Smart Wallet)
 - 💳 Fiat onramp via Coinbase Offramp
 
-[Companion bot](https://github.com/mr-procrastinator/defi-idea-analyse)
-- Defi strategies explanation agent 
-- 📱 Automated daily reports aggregating insights from DeFi-focused Telegram channels and on-chain data
-- 🔔 Configurable alerts for important DeFi events and opportunities
 
 ## Tech Stack
 
